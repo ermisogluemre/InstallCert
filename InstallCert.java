@@ -18,6 +18,7 @@
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
  * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
  * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
@@ -108,14 +109,14 @@ public class InstallCert {
         if (port       == -1  ) { port       = 443; }
         if (passphrase == null) { passphrase = "changeit".toCharArray(); }
 
-        File file = new File("jssecacerts");
+        File file = new File("cacerts");
         if (file.isFile() == false) {
-            char SEP = File.separatorChar;
-            File dir = new File(System.getProperty("java.home") + SEP + "lib" + SEP + "security");
-            file = new File(dir, "jssecacerts");
-            if (file.isFile() == false) {
-                file = new File(dir, "cacerts");
-            }
+			//If it does not exist, create a new one.
+			KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
+			ks.load(null, passphrase);
+			FileOutputStream fos = new FileOutputStream("cacerts");
+			ks.store(fos, passphrase);
+			fos.close();
         }
         System.out.println("Loading KeyStore " + file + "...");
         InputStream in = new FileInputStream(file);
@@ -200,14 +201,14 @@ public class InstallCert {
         String alias = host + "-" + (k + 1);
         ks.setCertificateEntry(alias, cert);
 
-        OutputStream out = new FileOutputStream("jssecacerts");
+        OutputStream out = new FileOutputStream("cacerts");
         ks.store(out, passphrase);
         out.close();
 
         System.out.println();
         System.out.println(cert);
         System.out.println();
-        System.out.println("Added certificate to keystore 'jssecacerts' using alias '" + alias + "'");
+        System.out.println("Added certificate to keystore 'cacerts' using alias '" + alias + "'");
     }
 
     private static final char[] HEXDIGITS = "0123456789abcdef".toCharArray();

@@ -16,8 +16,8 @@ java --source 11 InstallCert.java <args>
 # Access server, and retrieve certificate (accept default certificate 1)
 java InstallCert [--proxy=proxyHost:proxyPort] <host>[:port] [passphrase]
 
-# Extract certificate from created jssecacerts keystore
-keytool -exportcert -alias [host]-1 -keystore jssecacerts -storepass changeit -file [host].cer
+# Extract certificate from created cacerts keystore
+keytool -exportcert -alias [host]-1 -keystore cacerts -storepass changeit -file [host].cer
 
 # Import certificate into system keystore
 keytool -importcert -alias [host] -keystore [path to system keystore] -storepass changeit -file [host].cer
@@ -52,13 +52,13 @@ java InstallCert woot.com:443
 
     <...>
 
-    Added certificate to keystore 'jssecacerts' using alias 'woot.com-1'
+    Added certificate to keystore 'cacerts' using alias 'woot.com-1'
 
-keytool -exportcert -alias woot.com-1 -keystore jssecacerts -storepass changeit -file woot.com.cer
+keytool -exportcert -alias woot.com-1 -keystore cacerts -storepass changeit -file woot.com.cer
 
     Certificate stored in file <woot.com.cer>
   
-(sudo) keytool -importcert -alias woot.com -keystore /usr/lib/jvm/java-6-sun-1.6.0.26/jre/lib/security/cacerts -storepass changeit -file woot.com.cer
+(sudo) keytool -importcert -alias woot.com -keystore cacerts -storepass changeit -file woot.com.cer
 
     Owner: O=Woot Inc, C=US, ST=Texas, L=Carrollton, CN=*.woot.com
     Issuer: CN=SecureTrust CA, O=SecureTrust Corporation, C=US
